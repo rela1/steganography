@@ -2,7 +2,6 @@ package com.bmpsteg.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -10,19 +9,15 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import com.bmpsteg.crypto.SymmetricCrypto;
-import com.bmpsteg.steg.SteganographyAlgorithm;
+import com.bmpsteg.steg.HidingReversibleDeidentificationSteganography;
 
 /**
  * Represents abstract panel for steganography action (hiding or extracting the
@@ -35,9 +30,8 @@ public abstract class AbstractStegoActionPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	protected final SteganographyAlgorithm stegAlg;
-	protected final SymmetricCrypto symmCrypt;
-	protected JLabel imageLabel;
+	protected final HidingReversibleDeidentificationSteganography stegAlg;
+	protected SelectableLabel imageLabel;
 	protected BufferedImage loadedImage;
 	protected JButton loadImageButton;
 	protected JButton actionButton;
@@ -53,39 +47,35 @@ public abstract class AbstractStegoActionPanel extends JPanel {
 	 * @param parentComponent
 	 *            parent component in which this panel resides
 	 * @param stegAlg
-	 *            steganography algorithm used for hiding encrypted text
+	 *            steganography algorithm used for hiding encrypted text and
+	 *            deidentification
 	 * @param symmCrypt
 	 *            symmetric cryptography algorithm used for encrypting the text
 	 */
 	public AbstractStegoActionPanel(Component parentComponent,
-			SteganographyAlgorithm stegAlg, SymmetricCrypto symmCrypt) {
+			HidingReversibleDeidentificationSteganography stegAlg) {
 		this.stegAlg = stegAlg;
-		this.symmCrypt = symmCrypt;
 		this.parentComponent = parentComponent;
 		createGUI();
 		createActions();
 	}
 
 	/**
-	 * Returns name of action button.
+	 * Returns panel containing graphics with action listeners attached to
+	 * perform work other than image loading.
 	 * 
-	 * @return name of action button
+	 * @return panel containing graphics with action listeners attached to
+	 *         perform work other than image loading
 	 */
-	protected abstract String getActionButtonName();
+	protected abstract JPanel getActionPanel();
 
 	/**
-	 * Returns action button action listener.
+	 * Called when new image is loaded into selectable label.
 	 * 
-	 * @return action button action listener
+	 * @param image
+	 *            new image that is loaded into selectable label
 	 */
-	protected abstract ActionListener getActionButtonActionListener();
-
-	/**
-	 * Returns whether text area is editable or not
-	 * 
-	 * @return true if text area is editable, false otherwise
-	 */
-	protected abstract boolean isTextAreaEditable();
+	protected abstract void newImageLoaded(BufferedImage image);
 
 	/**
 	 * Creates button actions for loading image and steganography action.
@@ -103,7 +93,8 @@ public abstract class AbstractStegoActionPanel extends JPanel {
 					if (selectedFile != null) {
 						try {
 							loadedImage = ImageIO.read(selectedFile);
-							imageLabel.setIcon(new ImageIcon(loadedImage));
+							newImageLoaded(loadedImage);
+							imageLabel.setImage(loadedImage);
 						} catch (Exception ex) {
 							GUIUtilities.showErrorDialog(parentComponent,
 									"Error loading image!", ex.getMessage());
@@ -112,8 +103,6 @@ public abstract class AbstractStegoActionPanel extends JPanel {
 				}
 			}
 		});
-		actionButton.addActionListener(getActionButtonActionListener());
-
 	}
 
 	/**
@@ -121,34 +110,14 @@ public abstract class AbstractStegoActionPanel extends JPanel {
 	 */
 	private void createGUI() {
 		loadImageButton = new JButton("Load image...");
-		actionButton = new JButton(getActionButtonName());
-		imageLabel = new JLabel();
-		imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		imageLabel.setVerticalAlignment(SwingConstants.CENTER);
-		textArea = new JTextArea(10, 20);
-		textArea.setLineWrap(true);
-		textArea.setWrapStyleWord(true);
-		textArea.setEditable(isTextAreaEditable());
-		passwordField = new JPasswordField(20);
+		imageLabel = new SelectableLabel();
 		setLayout(new BorderLayout());
 		JPanel imageLoadPanel = new JPanel(new BorderLayout());
 		imageLoadPanel.add(new JScrollPane(imageLabel), BorderLayout.CENTER);
 		imageLoadPanel.add(loadImageButton, BorderLayout.SOUTH);
 		imageLoadPanel.setBorder(BorderFactory.createTitledBorder("Image"));
 		add(imageLoadPanel, BorderLayout.CENTER);
-		JPanel textPasswordHidePanel = new JPanel(new BorderLayout());
-		JPanel textPanel = new JPanel(new BorderLayout());
-		textPanel.add(new JScrollPane(textArea), BorderLayout.CENTER);
-		textPanel.setBorder(BorderFactory.createTitledBorder("Text"));
-		JPanel passwordPanel = new JPanel(new BorderLayout());
-		passwordPanel.add(passwordField, BorderLayout.CENTER);
-		passwordPanel.setBorder(BorderFactory.createTitledBorder("Password"));
-		textPasswordHidePanel.add(textPanel, BorderLayout.CENTER);
-		JPanel passwordSavePanel = new JPanel(new FlowLayout());
-		passwordSavePanel.add(passwordPanel);
-		passwordSavePanel.add(actionButton);
-		textPasswordHidePanel.add(passwordSavePanel, BorderLayout.SOUTH);
-		add(textPasswordHidePanel, BorderLayout.EAST);
+		add(getActionPanel(), BorderLayout.SOUTH);
 	}
 
 }
