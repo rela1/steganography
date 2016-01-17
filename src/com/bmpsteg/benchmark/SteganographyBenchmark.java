@@ -82,8 +82,14 @@ public class SteganographyBenchmark {
     }
 
     public static void main(String[] args){
+        if(args.length != 2){
+            System.err.print("Expected 2 command line params: target folder and original image path!");
+            return;
+        }
         SteganographyBenchmark benchmark = new SteganographyBenchmark();
-        benchmark.evaluate("/home/marin/IdeaProjects/RU/benchmark_results/", openString("/home/marin/IdeaProjects/RU/benchmark_results/original.png"));
+        String target_folder = args[0];
+        String original_image = args[1];
+        benchmark.evaluate(target_folder, openString(original_image));
     }
 
 }
