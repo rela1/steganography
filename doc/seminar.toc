@@ -6,7 +6,7 @@
 \contentsline {chapter}{\numberline {2}Postupak rje\IeC {\v s}avanja zadataka}{2}
 \contentsline {chapter}{\numberline {3}Ispitivanje rje\IeC {\v s}enja}{3}
 \contentsline {section}{\numberline {3.1}Ispitna baza}{4}
-\contentsline {section}{\numberline {3.2}Rezultati ispitivanja}{4}
-\contentsline {section}{\numberline {3.3}Analiza rezultata}{4}
-\contentsline {chapter}{\numberline {4}Opis programske implementacije rje\IeC {\v s}enja}{5}
-\contentsline {chapter}{\numberline {5}Zaklju\IeC {\v c}ak}{6}
+\contentsline {section}{\numberline {3.2}Rezultati ispitivanja}{5}
+\contentsline {section}{\numberline {3.3}Analiza rezultata}{21}
+\contentsline {chapter}{\numberline {4}Opis programske implementacije rje\IeC {\v s}enja}{22}
+\contentsline {chapter}{\numberline {5}Zaklju\IeC {\v c}ak}{23}

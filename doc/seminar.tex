@@ -1,9 +1,14 @@
 \documentclass[times, utf8, seminar]{fer}
 \usepackage{booktabs}
+%math packages
 \usepackage{authblk}
 \usepackage{mathtools}
 \usepackage{amsmath}
 \usepackage[binary-units=true]{siunitx}
+%table of images
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{adjustbox}
 
 %%floor symbol
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
@@ -65,11 +70,124 @@ n_{data} = \floor{\cfrac{n_{pixels} \cdot n_{components} \cdot n_{bits}}{8}}
 Udio veličine podataka $\eta$ koje je za dane parametre moguće upisati u sliku u odnosu na ukupnu veličinu slike je:
 \begin{equation}
 \label{eta}
-\eta = \cfrac{n_{data}}{3 \cdot 8 \cdot n_{pixels}} = \cfrac{n_{components} \cdot n_{bits}}{24}
+\eta = \cfrac{n_{data}}{3 \cdot n_{pixels}} = \cfrac{n_{components} \cdot n_{bits}}{24}
 \end{equation}
 Povećanjem $\eta$ vizualna razlika između izvorne slike i slike obrađene steganografskim algoritmom, u našem slučaju \textit{LSB}-om, povećava se. U nastavku slijede rezultati ispitivanja odnosa izvorne i obrađene slike u ovisnosti o parametrima $n_{components}$ i $n_{bits}$.
 \section{Ispitna baza}
+Ispitivanje algoritma \textit{LSB} napravljeno je nad dvjema različitim slikama. Slika \ref{chart_original} korištena je kako bi se ispitala osjetljivost boja na postupak, dok bi slika \ref{pattern_original} trebala pokazati osjetljivost tekstura. Ispitni primjeri pripremljeni su u ovisnosti o parametrima $n_{components}$ i $n_{bits}$. Za obje izvorne slike algoritam je pokrenut za sve moguće kombinacije parametara. Parametar $n_{components}$ poprima vrijednosti iz $[1,3]$, pošto svaki piksel ima crvenu, zelenu i plavu komponentu boje. Parametar $n_{bits}$ poprima vrijednosti iz $[1,8]$, gdje se za svaki bajt koristi $n_{bits}$ bitova u koje se upisuje podatak. Ukupno postoje 24 moguća para parametara algoritma. Nadalje, za svaki ispitni primjer odabrana je najveća količina podataka moguća za dane parametre, te su generirani nizovi bitova nasumične vrijednosti. U idućem odjeljku slijede rezultati ispitivanja, koji vizualno prikazuju promjenu kvalitete slike u ovisnosti o parametrima algoritma.
+\begin{center}
+\begin{figure}[ht]
+	\caption{Izvorna slika jednostavnih boja, bez teksture}
+	\label{chart_original}
+	\centerline{
+	\includegraphics[scale=0.4]{../benchmark_results/color_chart/original.png}	
+	}
+\end{figure}
+\end{center}
+
+\begin{center}
+
+\begin{figure}[ht]
+	\caption{Izvorna slika s teksturom}
+	\label{pattern_original}
+	\centerline{
+	\includegraphics[scale=0.4]{../benchmark_results/pattern/pattern_original.jpg}	
+	}
+\end{figure}
+\end{center}
+
 \section{Rezultati ispitivanja}
+Tablice \ref{pattern_original} i \ref{table_chart} prikazuju obređene slike algoritmom \textit{LSB} za vrijednosti parametara $n_{components}$ i $n_{bits}$. Treći stupac, $\eta$, prikazuje udio upisanih podataka u ukupnoj veličini slike.
+\begin{center}
+\begin{longtable}{|c|c|c|c|}
+\caption{Osjetljivost kvalitete slike jednostavnih boja na \textit{LSB} u ovisnosti o parametrima $n_{components}$ i $n_{bits}$}\\
+\hline
+\textbf{$n_{components}$} & \textbf{$n_{bits}$} & \textbf{$\eta$} & \textbf{Slika}\\
+\hline
+\label{table_chart}
+\endfirsthead
+\multicolumn{4}{c}%
+{\tablename\ \thetable\ -- \textit{Nastavljeno s prethodne strane}} \\
+\hline
+\textbf{$n_{components}$} & \textbf{$n_{bits}$} & \textbf{$\eta$} & \textbf{Slika}\\
+\hline
+\endhead
+\hline \multicolumn{4}{r}{\textit{Nastavlja se na idućoj strani}} \\
+\endfoot
+\hline
+\endlastfoot
+1 & 1 &4\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/1_components-1_bits.png} \\
+1 & 2 &8\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/1_components-2_bits.png} \\
+1 & 3 &12\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/1_components-3_bits.png} \\
+1 & 4 &17\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/1_components-4_bits.png} \\
+1 & 5 &21\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/1_components-5_bits.png} \\
+1 & 6 &25\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/1_components-6_bits.png} \\
+1 & 7 &29\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/1_components-7_bits.png} \\
+1 & 8 &33\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/1_components-8_bits.png} \\
+2 & 1 &8\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/2_components-1_bits.png} \\
+2 & 2 &12\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/2_components-2_bits.png} \\
+2 & 3 &25\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/2_components-3_bits.png} \\
+2 & 4 &33\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/2_components-4_bits.png} \\
+2 & 5 &42\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/2_components-5_bits.png} \\
+2 & 6 &50\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/2_components-6_bits.png} \\
+2 & 7 &58\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/2_components-7_bits.png} \\
+2 & 8 &67\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/2_components-8_bits.png} \\
+3 & 1 &12\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/3_components-1_bits.png} \\
+3 & 2 &25\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/3_components-2_bits.png} \\
+3 & 3 &38\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/3_components-3_bits.png} \\
+3 & 4 &50\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/3_components-4_bits.png} \\
+3 & 5 &62\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/3_components-5_bits.png} \\
+3 & 6 &75\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/3_components-6_bits.png} \\
+3 & 7 &88\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/3_components-7_bits.png} \\
+3 & 8 &100\% & \includegraphics[scale=0.3]{../benchmark_results/color_chart/3_components-8_bits.png} \\
+\end{longtable}
+\end{center}
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|}
+\caption{Osjetljivost kvalitete slike tekstura na \textit{LSB} u ovisnosti o parametrima $n_{components}$ i $n_{bits}$}\\
+\hline
+\textbf{$n_{components}$} & \textbf{$n_{bits}$} & \textbf{$\eta$} & \textbf{Slika}\\
+\hline
+\label{table_pattern}
+\endfirsthead
+\multicolumn{4}{c}%
+{\tablename\ \thetable\ -- \textit{Nastavljeno s prethodne strane}} \\
+\hline
+\textbf{$n_{components}$} & \textbf{$n_{bits}$} & \textbf{$\eta$} & \textbf{Slika}\\
+\hline
+\endhead
+\hline \multicolumn{4}{r}{\textit{Nastavlja se na idućoj strani}} \\
+\endfoot
+\hline
+\endlastfoot
+1 & 1 &4\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/1_components-1_bits.png} \\
+1 & 2 &8\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/1_components-2_bits.png} \\
+1 & 3 &12\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/1_components-3_bits.png} \\
+1 & 4 &17\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/1_components-4_bits.png} \\
+1 & 5 &21\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/1_components-5_bits.png} \\
+1 & 6 &25\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/1_components-6_bits.png} \\
+1 & 7 &29\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/1_components-7_bits.png} \\
+1 & 8 &33\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/1_components-8_bits.png} \\
+2 & 1 &8\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/2_components-1_bits.png} \\
+2 & 2 &12\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/2_components-2_bits.png} \\
+2 & 3 &25\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/2_components-3_bits.png} \\
+2 & 4 &33\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/2_components-4_bits.png} \\
+2 & 5 &42\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/2_components-5_bits.png} \\
+2 & 6 &50\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/2_components-6_bits.png} \\
+2 & 7 &58\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/2_components-7_bits.png} \\
+2 & 8 &67\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/2_components-8_bits.png} \\
+3 & 1 &12\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/3_components-1_bits.png} \\
+3 & 2 &25\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/3_components-2_bits.png} \\
+3 & 3 &38\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/3_components-3_bits.png} \\
+3 & 4 &50\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/3_components-4_bits.png} \\
+3 & 5 &62\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/3_components-5_bits.png} \\
+3 & 6 &75\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/3_components-6_bits.png} \\
+3 & 7 &88\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/3_components-7_bits.png} \\
+3 & 8 &100\% & \includegraphics[scale=0.3]{../benchmark_results/pattern/3_components-8_bits.png} \\
+\end{longtable}
+\end{center}
+
 \section{Analiza rezultata}
 
 \chapter{Opis programske implementacije rješenja}

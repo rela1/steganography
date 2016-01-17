@@ -73,7 +73,7 @@ public class SteganographyBenchmark {
             BufferedImage copied = deepCopy(originalImage);
             try {
                 algorithm.hideData(toHide, copied);
-                File outputfile = new File(folder + componentParam);
+                File outputfile = new File(folder + componentParam + ".png");
                 ImageIO.write(copied, "png", outputfile);
             } catch (InsufficientSpaceException | IOException e) {
                 e.printStackTrace();
