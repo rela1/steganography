@@ -1,6 +1,23 @@
 \documentclass[times, utf8, seminar]{fer}
 \usepackage{booktabs}
 \usepackage{authblk}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage[binary-units=true]{siunitx}
+
+%%floor symbol
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+%%SI unit notation
+\makeatletter
+\providecommand\add@text{}
+\newcommand\tagaddtext[1]{%
+  \gdef\add@text{#1\gdef\add@text{}}}% 
+\renewcommand\tagform@[1]{%
+  \maketag@@@{\llap{\add@text\quad}(\ignorespaces#1\unskip\@@italiccorr)}%
+}
+\makeatother
+
 
 \begin{document}
 
@@ -25,12 +42,32 @@
 
 \chapter{Projektni zadatak}
 \section{Opis projektnog zadatka}
-\section{Pregeld i opis srodnih rješenja}
+\section{Pregled i opis srodnih rješenja}
 \section{Konceptualno rješenje zadatka}
 
 \chapter{Postupak rješavanja zadataka}
 
 \chapter{Ispitivanje rješenja}
+Razvijeni sustav za steganografski postupak, kao i svi steganografski algoritmi, ograničen je količinom podataka koja se može upisati u neku sliku. Ova granica prvenstveno je određena veličinom slike, a određuju je i odabir kanala te najznačajniji bit do kojeg se upisuju podaci. Glavna ideja steganografskog algoritma jest upisati podatak u sliku bez velikog utjecaja na konačni izgled. Drugim riječima, izgled konačne slike uvjetovan je količinom podataka koji se u nju upisuju. Potrebno je pronaći dobre parametre steganografskog algoritma koji nude dobara kapacitet skrivenih podataka, a neznatno žrtvuju kvalitetu izvorne slike.
+\par
+Parametri algoritma koji su podešavani u ispitivanju su:
+\begin{itemize}
+\item Najznačajniji bit do kojeg se slijedno upisuje podatak
+\item RGB komponente u koje će se upisivati podaci
+\end{itemize}
+Algoritam \textit{Least Significant Bit(LSB)} upisivanje sadržaja započinje s bitovima najnižeg značaja. Razlog tome leži u tome što se izmjenom bita najmanjeg značaja piksel najmanje mijenja. Praktični primjer bio bi kada bismo odlučili mijenjati samo B(\textit{blue}) komponentu i to samo najniži bit svakog bajta. Za svaki piksel slike(3 komponente, svaka po 1 bajt) dobije se jedan bit prostora za skrivanje podataka. Općenito, količina podataka koja se može upisati($n_{data}$), u ovisnosti o broju komponenti za upisivanje $n_{components}$ i broja najnižih bitova svake odabrane komponente za upisivanje $n_{bits}$ te veličini(broju piksela) $n_{pixels}$ slike je:
+\begin{equation}
+\label{num_bits}
+n_{data} = \floor{\cfrac{n_{pixels} \cdot n_{components} \cdot n_{bits}}{8}}
+\tagaddtext{[B]}
+\end{equation}
+\par
+Udio veličine podataka $\eta$ koje je za dane parametre moguće upisati u sliku u odnosu na ukupnu veličinu slike je:
+\begin{equation}
+\label{eta}
+\eta = \cfrac{n_{data}}{3 \cdot 8 \cdot n_{pixels}} = \cfrac{n_{components} \cdot n_{bits}}{24}
+\end{equation}
+Povećanjem $\eta$ vizualna razlika između izvorne slike i slike obrađene steganografskim algoritmom, u našem slučaju \textit{LSB}-om, povećava se. U nastavku slijede rezultati ispitivanja odnosa izvorne i obrađene slike u ovisnosti o parametrima $n_{components}$ i $n_{bits}$.
 \section{Ispitna baza}
 \section{Rezultati ispitivanja}
 \section{Analiza rezultata}
