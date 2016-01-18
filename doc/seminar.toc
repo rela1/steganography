@@ -2,11 +2,38 @@
 \contentsline {chapter}{\numberline {1}Projektni zadatak}{1}
 \contentsline {section}{\numberline {1.1}Opis projektnog zadatka}{1}
 \contentsline {section}{\numberline {1.2}Pregled i opis srodnih rje\IeC {\v s}enja}{1}
-\contentsline {section}{\numberline {1.3}Konceptualno rje\IeC {\v s}enje zadatka}{1}
-\contentsline {chapter}{\numberline {2}Postupak rje\IeC {\v s}avanja zadataka}{2}
-\contentsline {chapter}{\numberline {3}Ispitivanje rje\IeC {\v s}enja}{3}
-\contentsline {section}{\numberline {3.1}Ispitna baza}{4}
-\contentsline {section}{\numberline {3.2}Rezultati ispitivanja}{5}
-\contentsline {section}{\numberline {3.3}Analiza rezultata}{21}
-\contentsline {chapter}{\numberline {4}Opis programske implementacije rje\IeC {\v s}enja}{22}
-\contentsline {chapter}{\numberline {5}Zaklju\IeC {\v c}ak}{23}
+\contentsline {paragraph}{}{1}
+\contentsline {paragraph}{}{1}
+\contentsline {paragraph}{}{1}
+\contentsline {paragraph}{}{2}
+\contentsline {paragraph}{}{2}
+\contentsline {paragraph}{}{3}
+\contentsline {paragraph}{}{3}
+\contentsline {paragraph}{}{3}
+\contentsline {paragraph}{}{3}
+\contentsline {paragraph}{}{3}
+\contentsline {paragraph}{}{4}
+\contentsline {paragraph}{}{4}
+\contentsline {paragraph}{}{5}
+\contentsline {paragraph}{}{5}
+\contentsline {paragraph}{}{5}
+\contentsline {paragraph}{}{5}
+\contentsline {paragraph}{}{6}
+\contentsline {paragraph}{}{6}
+\contentsline {paragraph}{}{6}
+\contentsline {paragraph}{}{7}
+\contentsline {section}{\numberline {1.3}Konceptualno rje\IeC {\v s}enje zadatka}{7}
+\contentsline {chapter}{\numberline {2}Postupak rje\IeC {\v s}avanja zadataka}{8}
+\contentsline {chapter}{\numberline {3}Ispitivanje rje\IeC {\v s}enja}{9}
+\contentsline {paragraph}{}{9}
+\contentsline {paragraph}{}{9}
+\contentsline {paragraph}{}{9}
+\contentsline {section}{\numberline {3.1}Ispitna baza}{10}
+\contentsline {paragraph}{}{10}
+\contentsline {section}{\numberline {3.2}Rezultati ispitivanja}{11}
+\contentsline {paragraph}{}{11}
+\contentsline {section}{\numberline {3.3}Analiza rezultata}{27}
+\contentsline {paragraph}{}{27}
+\contentsline {paragraph}{}{28}
+\contentsline {chapter}{\numberline {4}Opis programske implementacije rje\IeC {\v s}enja}{29}
+\contentsline {chapter}{\numberline {5}Zaklju\IeC {\v c}ak}{30}
