@@ -82,8 +82,7 @@ public class HideDataPanel extends AbstractStegoActionPanel {
 	private void createActionPanel() {
 		maxDataLabel = new JLabel("Maximum bytes to hide: 0");
 		currentDataLabel = new JLabel("Current selection bytes: 0");
-		useSelectedDataCheckbox = new JCheckBox(
-				"Use selection as data to hide: ");
+		useSelectedDataCheckbox = new JCheckBox("Use selection as data to hide");
 		hideSelectedDataCheckbox = new JCheckBox("Hide selection");
 		loadDataButton = new JButton("Load data to hide");
 		hideDataButton = new JButton("Hide selected data");
@@ -150,8 +149,8 @@ public class HideDataPanel extends AbstractStegoActionPanel {
 		int imageHeight = loadedImage.getHeight();
 		startX = Math.max(0, startX);
 		startY = Math.max(0, startY);
-		endX = Math.min(imageWidth, endX);
-		endY = Math.min(imageHeight, endY);
+		endX = Math.min(imageWidth - 1, endX);
+		endY = Math.min(imageHeight - 1, endY);
 		return new int[] { startX, endX, startY, endY };
 	}
 
