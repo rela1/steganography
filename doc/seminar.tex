@@ -4,7 +4,6 @@
 \usepackage{authblk}
 \usepackage{mathtools}
 \usepackage{amsmath}
-\usepackage[binary-units=true]{siunitx}
 %table of images
 \usepackage{graphicx}
 \usepackage{longtable}
@@ -263,6 +262,57 @@ Ispitivanje je pokazalo kako upisana količina podataka znatno može utjecati na
 \paragraph{}
 Analiza rezultata potvrđuje izvornu hipotezu da je algoritam osjetljiv na količinu podataka koji se upisuju na sliku. Najbolji rezultati ostvareni su za parametre koji mijenjaju do 2 najmanje značajna bita svake komponente(za $\eta \in$ [0\%, 25\%]), što u konačnici znači da se u svaku sliku može upisati količina podataka koja odgovara četvrtini veličine izvorne slike.
 \chapter{Opis programske implementacije rješenja}
+\paragraph{}
+Slijedi opis sučelja programske implementacije i način njenog korištenja. Programska implementacija reverzibilne deidentifikacije i steganografskog postupka izvedena je u programskom jeziku \textit{Java}. Implementacija sadrži grafičko korisničko sučelje radi lakšeg i intuitivnijeg korištenja. U nastavku su dani dijagrami razreda i kratak opis programskog koda te način korištenja same aplikacije kroz grafičko korisničko sučelje.
+
+\section{Opis programske implementacije}
+\paragraph{}
+Programski jezik \textit{Java} odabran je zbog toga što se prevodi u \textit{byte-code} koji se može platformski neovisno izvršavati na svim platformama na kojima je moguće pokrenuti \textit{Java Virtual Machine}, odnosno okolinu za izvršavanje \textit{Java byte-codea}.
+
+\begin{figure}
+\caption{Dijagram razreda reverzibilne deidentifikacije i steganografskog postupka}
+\label{steg_class_diagram}
+\centerline{\includegraphics[scale=0.4]{images/steg_class_diagram.png}}
+\end{figure}
+
+\paragraph{}
+Slika \ref{steg_class_diagram} prikazuje dijagram razreda reverzibilne deidentifikacije i steganografskog postupka. \texttt{SteganographyAlgorithm} predstavlja čisto apstraktno sučelje steganografskog algoritma. Implementacije tog sučelja moraju ponuditi 3 metode:
+\begin{description}
+\item[\texttt{hideData)}] Metoda prima niz bajtova i sliku u koju se ti bajtovi moraju steganografski pohraniti.
+\item[\texttt{extractData}] Metoda prima sliku u kojoj su steganografski pohranjeni podaci i vraća ih u obliku bajtova.
+\item[\texttt{getMaxBytes}] Metoda vraća maksimalni broj bajtova koje korisnik može predati metodi \texttt{hideData}.
+\end{description}
+
+\texttt{ReversibleDeidentificationSteganographyAlgorithm} predstavlja čisto apstraktno sučelje koje nasljeđuje sučelje \texttt{SteganographyAlgorithm} i nudi još jednu dodatnu metodu:
+\begin{description}
+\item[\texttt{preprocessOriginalImage}] Metoda prima sliku u koju se podaci steganografski zapisuju i koordinate pravokutnika koji označava identifikacijsku značajku osobe. Od korisnika koji implementira navedeno sučelje očekuje se da za postupak reverzibilne deidentifikacije u navedenoj metodi "sakrije" identifikacijsku značajku osobe tako da se ona ne može vidjeti na samoj slici, ali će ta informacija biti steganografski zapisana u samu sliku.
+\end{description}
+
+\texttt{RGBBitsSteganography} predstavlja implementaciju sučelja \texttt{SteganographyAlgorithm}. Implementacija je izvedena na način da se podaci koje je potrebno steganografski upisati redom zapisuju u plavu, zelenu i crvenu komponentu od najnižeg bita prema najvišem, ovisno o odabiru parametara koliko komponenti boje i koliko bitova po komponenti se koristi za upis podataka u sliku. Implementacija prije upisa samih podataka prvo upisuje 4 bajta koji označavaju koliko podataka je upisano u sliku tako da pri ekstrakciji podataka iz slike bude dostupna informacija koliko je podataka zapisano u slici. Metoda \texttt{getMaxBytes} implementirana je na način da vraća broj bajtova koje je moguće upisati u sliku u ovisnosti o odabranom broju komponenata i broju bitova po komponenti umanjenih za 4 bajta koji se koriste kao informacija o broju upisanih podataka u sliku.
+
+\texttt{HidingReversibleDeidentificationSteganography} predstavlja implementaciju sučelja \texttt{ReversibleDeidentificationSteganographyAlgorithm} koja nasljeđuje razred \texttt{RGBBitsSteganography}. Metoda \texttt{preprocessOriginalImage} implementirana je tako da na slici popuni pravokutnik na predanim koordinatama crnom bojom.
+
+\section{Način korištenja implementacije}
+\paragraph{}
+Pokretanjem aplikacije vidljivo je kako je kroz grafičko korisničko sučelje moguće izabrati između dvije komponente korištenja:
+\begin{description}
+\item[sakrivanje podataka] U ovom načinu korištenja moguće je učitati sliku i sakriti podatke u nju. 
+\item[ekstrakcija skrivenih podataka] U ovom načinu korištenja moguće je učitavanje slike sa steganografski sakrivenim podacima i njihova ekstrakcija.
+\end{description}
+
+\begin{figure}[ht]
+\caption{Početni ekran aplikacije}
+\label{app_home_screen_hide}
+\centerline{\includegraphics[scale=0.4]{images/app_home_screen_hide.png}}
+\end{figure}
+
+Slika \ref{app_home_screen_hide} prikazuje početni ekran aplikacije kada je odabran način rada za sakrivanje podataka. Pritiskom na tipku \textit{Load image...} otvara se prozor za odabir slike koja će se koristiti za skrivanje podataka. Ispod tipke za učitavanje slike nalazi se informacija o tome koliko bajtova je maksimalno moguće steganografski zapisati u učitanu sliku koristeći odabrane parametre. Također, ukoliko se koristi označeno područje za sakrivanje podataka, također je prikazana i približna veličina odabranog područja u bajtovima. Kućica \textit{Use selection as data to hide} predstavlja izbor hoće li se sakrivati podaci koji su označeni na slici ili će se koristiti podaci koje je moguće učitati pritiskom na tipku \textit{Load data to hide}. Kućica \textit{Hide selection} označava izbor hoće li se na slici podaci koji su označeni prekriti crnim pravokutnikom u svrhu skrivanja. Navedene kućice možemo koristiti u svrhu reverzibilne deidentifikacije tako da na slici označimo identifikacijske značajke osobe i označimo obe kućice. Algoritam će koristiti podatke sa slike kao podatke koji se steganografski upisuju i sakrit će označeno područje na originalnoj slici. Iz dobivene slike se naknadno ekstrakcijom mogu izlučiti sakrivene identifikacijske značajke osobe. Padajući izbornik \textit{Color components to use per pixel} omogućuje odabir koliko komponenti boje će se koristiti za sakrivanje podataka. Komponente se koriste sljedećim redoslijedom: prvo plava komponenta, zatim zelena komponenta te naposlijetku crvena komponenta. Padajući izbornik \textit{Bits to use per color component} omogućuje odabir koliko bitova po komponenti boje će se koristiti za steganografsko zapisivanje podataka u sliku. 
+
+\begin{figure}[ht]
+\caption{Aktivna selekcija dijela slike prilikom sakrivanja podataka}
+\label{app_selection_active}
+\centerline{\includegraphics[scale=0.4]{images/app_selection_active.png}}
+\end{figure}
 
 \chapter{Zaključak}
 

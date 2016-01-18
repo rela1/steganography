@@ -36,4 +36,11 @@
 \contentsline {paragraph}{}{27}
 \contentsline {paragraph}{}{28}
 \contentsline {chapter}{\numberline {4}Opis programske implementacije rje\IeC {\v s}enja}{29}
-\contentsline {chapter}{\numberline {5}Zaklju\IeC {\v c}ak}{30}
+\contentsline {paragraph}{}{29}
+\contentsline {section}{\numberline {4.1}Opis programske implementacije}{29}
+\contentsline {paragraph}{}{29}
+\contentsline {paragraph}{}{29}
+\contentsline {section}{\numberline {4.2}Na\IeC {\v c}in kori\IeC {\v s}tenja implementacije}{31}
+\contentsline {paragraph}{}{31}
+\contentsline {chapter}{\numberline {5}Zaklju\IeC {\v c}ak}{33}
+\contentsline {chapter}{\numberline {6}Literatura}{34}
