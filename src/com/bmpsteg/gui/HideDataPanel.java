@@ -127,9 +127,6 @@ public class HideDataPanel extends AbstractStegoActionPanel {
 			return;
 		}
 		int[] subImageCoordinates = getSelectionCoordinates();
-		System.out.println(subImageCoordinates[0] + " "
-				+ subImageCoordinates[1] + " " + subImageCoordinates[2] + " "
-				+ subImageCoordinates[3]);
 		int currentDataToHide = (subImageCoordinates[1]
 				- subImageCoordinates[0] + 1)
 				* (subImageCoordinates[3] - subImageCoordinates[2] + 1)
