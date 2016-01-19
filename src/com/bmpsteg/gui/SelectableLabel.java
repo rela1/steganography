@@ -45,17 +45,21 @@ public class SelectableLabel extends JComponent {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (SwingUtilities.isLeftMouseButton(e)) {
-					startingPoint = e.getPoint();
+					Point pressedPoint = e.getPoint();
+					if (image != null && pressedPoint.x < image.getWidth()
+							&& pressedPoint.y < image.getHeight()) {
+						startingPoint = pressedPoint;
+					} else {
+						startingPoint = null;
+						endingPoint = null;
+					}
 				}
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				if (startingPoint != null) {
-					endingPoint = e.getPoint();
-				} else {
-					startingPoint = null;
-					endingPoint = null;
+					setEndingPoint(e);
 				}
 				notifyListeners();
 				repaint();
@@ -75,10 +79,30 @@ public class SelectableLabel extends JComponent {
 			public void mouseDragged(MouseEvent e) {
 				if (startingPoint != null) {
 					endingPoint = e.getPoint();
+					endingPoint.x = Math.max(0, endingPoint.x);
+					endingPoint.y = Math.max(0, endingPoint.y);
+					endingPoint.x = Math.min(image.getWidth() - 1,
+							endingPoint.x);
+					endingPoint.y = Math.min(image.getHeight() - 1,
+							endingPoint.y);
 					repaint();
 				}
 			}
 		});
+	}
+
+	/**
+	 * Sets ending point from mouse event.
+	 * 
+	 * @param e
+	 *            mouse event
+	 */
+	private void setEndingPoint(MouseEvent e) {
+		endingPoint = e.getPoint();
+		endingPoint.x = Math.max(0, endingPoint.x);
+		endingPoint.y = Math.max(0, endingPoint.y);
+		endingPoint.x = Math.min(image.getWidth() - 1, endingPoint.x);
+		endingPoint.y = Math.min(image.getHeight() - 1, endingPoint.y);
 	}
 
 	/**

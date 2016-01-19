@@ -127,8 +127,14 @@ public class HideDataPanel extends AbstractStegoActionPanel {
 			return;
 		}
 		int[] subImageCoordinates = getSelectionCoordinates();
-		int currentDataToHide = (subImageCoordinates[1] - subImageCoordinates[0])
-				* (subImageCoordinates[3] - subImageCoordinates[2]) * 3;
+		System.out.println(subImageCoordinates[0] + " "
+				+ subImageCoordinates[1] + " " + subImageCoordinates[2] + " "
+				+ subImageCoordinates[3]);
+		int currentDataToHide = (subImageCoordinates[1]
+				- subImageCoordinates[0] + 1)
+				* (subImageCoordinates[3] - subImageCoordinates[2] + 1)
+				* 3
+				+ 54;
 		currentDataLabel.setText("Current selection bytes: ~"
 				+ currentDataToHide);
 	}
@@ -145,12 +151,6 @@ public class HideDataPanel extends AbstractStegoActionPanel {
 		int startY = Math.min(startPoint.y, endPoint.y);
 		int endX = Math.max(startPoint.x, endPoint.x);
 		int endY = Math.max(startPoint.y, endPoint.y);
-		int imageWidth = loadedImage.getWidth();
-		int imageHeight = loadedImage.getHeight();
-		startX = Math.max(0, startX);
-		startY = Math.max(0, startY);
-		endX = Math.min(imageWidth - 1, endX);
-		endY = Math.min(imageHeight - 1, endY);
 		return new int[] { startX, endX, startY, endY };
 	}
 
@@ -229,10 +229,13 @@ public class HideDataPanel extends AbstractStegoActionPanel {
 				}
 				byte[] dataToHide = null;
 				if (useSelectedDataCheckbox.isSelected()) {
-					BufferedImage subImage = loadedImage.getSubimage(
-							subImageCoordinates[0], subImageCoordinates[2],
-							subImageCoordinates[1] - subImageCoordinates[0],
-							subImageCoordinates[3] - subImageCoordinates[2]);
+					BufferedImage subImage = loadedImage
+							.getSubimage(subImageCoordinates[0],
+									subImageCoordinates[2],
+									subImageCoordinates[1]
+											- subImageCoordinates[0] + 1,
+									subImageCoordinates[3]
+											- subImageCoordinates[2] + 1);
 					try {
 						ByteArrayOutputStream baos = new ByteArrayOutputStream();
 						ImageIO.write(subImage, "bmp", baos);
