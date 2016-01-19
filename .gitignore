@@ -4,3 +4,4 @@ RU.iml
 doc/seminar.pdf
 doc/texput.log
 doc/seminar.log
+bin/*
