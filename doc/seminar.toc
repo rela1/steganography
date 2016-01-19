@@ -42,5 +42,7 @@
 \contentsline {paragraph}{}{29}
 \contentsline {section}{\numberline {4.2}Na\IeC {\v c}in kori\IeC {\v s}tenja implementacije}{31}
 \contentsline {paragraph}{}{31}
-\contentsline {chapter}{\numberline {5}Zaklju\IeC {\v c}ak}{33}
-\contentsline {chapter}{\numberline {6}Literatura}{34}
+\contentsline {chapter}{\numberline {5}Zaklju\IeC {\v c}ak}{36}
+\contentsline {paragraph}{}{36}
+\contentsline {paragraph}{}{36}
+\contentsline {chapter}{\numberline {6}Literatura}{37}

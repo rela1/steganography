@@ -8,6 +8,7 @@
 \usepackage{graphicx}
 \usepackage{longtable}
 \usepackage{adjustbox}
+\usepackage{float}
 
 %%floor symbol
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
@@ -300,7 +301,7 @@ Pokretanjem aplikacije vidljivo je kako je kroz grafičko korisničko sučelje m
 \item[ekstrakcija skrivenih podataka] U ovom načinu korištenja moguće je učitavanje slike sa steganografski sakrivenim podacima i njihova ekstrakcija.
 \end{description}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \caption{Početni ekran aplikacije}
 \label{app_home_screen_hide}
 \centerline{\includegraphics[scale=0.4]{images/app_home_screen_hide.png}}
@@ -308,13 +309,53 @@ Pokretanjem aplikacije vidljivo je kako je kroz grafičko korisničko sučelje m
 
 Slika \ref{app_home_screen_hide} prikazuje početni ekran aplikacije kada je odabran način rada za sakrivanje podataka. Pritiskom na tipku \textit{Load image...} otvara se prozor za odabir slike koja će se koristiti za skrivanje podataka. Ispod tipke za učitavanje slike nalazi se informacija o tome koliko bajtova je maksimalno moguće steganografski zapisati u učitanu sliku koristeći odabrane parametre. Također, ukoliko se koristi označeno područje za sakrivanje podataka, također je prikazana i približna veličina odabranog područja u bajtovima. Kućica \textit{Use selection as data to hide} predstavlja izbor hoće li se sakrivati podaci koji su označeni na slici ili će se koristiti podaci koje je moguće učitati pritiskom na tipku \textit{Load data to hide}. Kućica \textit{Hide selection} označava izbor hoće li se na slici podaci koji su označeni prekriti crnim pravokutnikom u svrhu skrivanja. Navedene kućice možemo koristiti u svrhu reverzibilne deidentifikacije tako da na slici označimo identifikacijske značajke osobe i označimo obe kućice. Algoritam će koristiti podatke sa slike kao podatke koji se steganografski upisuju i sakrit će označeno područje na originalnoj slici. Iz dobivene slike se naknadno ekstrakcijom mogu izlučiti sakrivene identifikacijske značajke osobe. Padajući izbornik \textit{Color components to use per pixel} omogućuje odabir koliko komponenti boje će se koristiti za sakrivanje podataka. Komponente se koriste sljedećim redoslijedom: prvo plava komponenta, zatim zelena komponenta te naposlijetku crvena komponenta. Padajući izbornik \textit{Bits to use per color component} omogućuje odabir koliko bitova po komponenti boje će se koristiti za steganografsko zapisivanje podataka u sliku. 
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \caption{Aktivna selekcija dijela slike prilikom sakrivanja podataka}
 \label{app_selection_active}
 \centerline{\includegraphics[scale=0.4]{images/app_selection_active.png}}
 \end{figure}
 
+Slika \ref{app_selection_active} prikazuje aplikaciju u trenutku kada je učitana slika u koju se steganografski upisuju podaci i kada je napravljena selekcija dijela slike. Odabrani parametri za steganografski postupak jesu 2 komponente boje po pikselu (plava i zelena) te 2 bita po svakoj od komponenata. Izračun koji uzima u obzir parametre uz veličinu učitane slike daje da je maksimalna veličina podataka koju možemo steganografski upisati jednaka 44996 bajtova. Približna veličina označenog dijela slike je 42693 bajtova. Kućice \textit{Use selection as data to hide} i \textit{Hide selection} su označene pa će se odabrano područje prekriti crnim pravokutnikom te će se koristiti kao podaci koji se steganografski upisuju u samu sliku. Ukoliko ne bismo željeli koristiti to područje kao podatke koje skrivamo, morali bi odznačiti kućicu \textit{Use selection as data to hide} te bi učitali datoteku koju želimo steganografski upisati u sliku pritiskom na tipku \textit{Load data to hide}. Pritiskom na tipku \textit{Hide selected data} otvara se prozor na kojem izabiremo lokaciju na koju želimo da se pohrani fotografija sa podacima steganografski upisa
+
+\begin{figure}[H]
+\caption{Slika sa skrivenim i steganografski upisanim označenim podacima}
+\label{image_with_hidden}
+\centerline{\includegraphics[scale=0.6]{images/image_with_hidden.png}}
+\end{figure}
+
+Slika \ref{image_with_hidden} prikazuje fotografiju dobivenu pritiskom na tipku \textit{Hide selected data} i odabirom lokacije na koju želimo pohraniti sliku sa steganografski upisanim podacima. Vidljivo je kako je područje koje je bilo selektirano prekriveno crnim pravokutnikom u svrhu sakrivanja identifikacijskih značajki osobe na slici. Selektirani dio slike, odnosno podaci koji sadrže identifikacijske značajke osobe sa slike steganografski su upisani u samu sliku.
+
+\begin{figure}[H]
+\caption{Početni ekran u načinu rada ekstrakcije steganografski upisanih podataka}
+\label{app_home_screen_extract}
+\centerline{\includegraphics[scale=0.4]{images/app_home_screen_extract.png}}
+\end{figure}
+
+Slika \ref{app_home_screen_extract} prikazuje početni ekran aplikacije u načinu rada za ekstrakciju steganografski upisanih podataka. Pritiskom na tipku \textit{Load image...} otvara se prozor za odabir slike koja sadrži podatke upisane steganografski u nju i čiju ekstrakciju želimo. Jedini parametri koje je potrebno podesiti jesu broj komponenti boje po pikselu i broj bitova po komponenti boje koji će se koristiti prilikom ekstrakcije podataka, slično kao i u slučaju steganografskog upisivanja podataka u sliku.
+
+\begin{figure}[H]
+\caption{Učitana slika za ekstrakciju steganografski zapisanih podataka}
+\label{app_loaded_screen_extract}
+\centerline{\includegraphics[scale=0.4]{images/app_loaded_screen_extract.png}}
+\end{figure}
+
+Učitavanjem slike koja sadrži podatke upisane steganografski i odabirom potrebnih parametara kao što je to učinjeno na slici \ref{app_loaded_screen_extract}, aplikacija je spremna za ekstrakciju podataka steganografski upisanih u sliku. Pritiskom na tipku \textit{Extract hidden data} otvara se prozor na kojem izabiremo lokaciju na koju želimo da se pohrane podaci koji su steganografski upisani u samu sliku.
+
+\begin{figure}[H]
+\caption{Podaci dobiveni ekstrakcijom steganografski upisanih podataka u slici}
+\label{extracted_stego_data}
+\centerline{\includegraphics[scale=0.6]{images/extracted_stego_data.png}}
+\end{figure}
+
+Završetkom ekstrakcije podataka, dobivamo podatke prikazane na slici \ref{extracted_stego_data}. 
+
 \chapter{Zaključak}
+
+\paragraph{}
+Osnovna namjena korištenja aplikacije je reverzibilna deidentifikacija osoba na slikama. Prema ispitnim rezultatima, šum na slici (zbog prevelike veličine podataka koji se pohranjuju u sliku) javlja se tek pri korištenju većeg broja bitova po komponenti boje u steganografskom postupku. Općenito, na slikama na kojima vršimo reverzibilnu deidentifikaciju, identifikacijske značajke obuhvaćaju relativno malen dio slike pa ih je moguće vrlo efikasno (uz gotovo nikakav šum) pohraniti steganografski u samu sliku i sakriti. Na takvoj slici vrlo je teško uočiti da su ikakvi podaci pohranjeni u njoj. Reverzibilnim postupkom je zatim moguće povratiti identifikacijske značajke koje je ta slika sadržavala. Takvim postupkom moguće je reverzibilno očuvati identitet osoba na slici tako da mu samo ona strana koja je zaista i ovlaštena za to ima pristup. 
+
+\paragraph{}
+U smislu poboljšanja postupka, budući rad mogao bi ići u smjeru promjene načina na koji se raspoznaju identifikacijske značajke na slici. Trenutna implementacija je takva da korisnik sam odabere područje koje sadrži identifikacijske značajke na slici i da mu je ponuđeno da sakrije i steganografski upiše te podatke u samu sliku. Budući rad za unapređenje sustava bio bi algoritam koji bi automatski raspoznavao područja koja sadrže identifikacijske značajke na slici i sakrivao ih te steganografski upisivao u sliku. Nadalje, mogući rad mogao bi ići i u smjeru povećanja sigurnosti sustava, odnosno većoj zaštiti identiteta osobe na slici korištenjem enkripcije. Sustav bi trebalo promijeniti tako da podatke prije samog steganografskog upisivanja u sliku zaštiti nekim enkripcijskom algoritmom koristeći ključ koji je poznat samo stranama ovlaštenima za pristup identifikacijskim podacima.
 
 \bibliography{literatura}
 \bibliographystyle{fer}
