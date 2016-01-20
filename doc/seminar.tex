@@ -22,16 +22,18 @@
   \maketag@@@{\llap{\add@text\quad}(\ignorespaces#1\unskip\@@italiccorr)}%
 }
 \makeatother
-
+\bibliographystyle{fer}
 
 \begin{document}
 
+\nocite{*}
 % TODO: Navedite naslov rada.
-\title{Uporaba steganografije u revezibilnoj deidentifikaciji}
+\title{Uporaba steganografije u reverzibilnoj deidentifikaciji}
 
 % TODO: Navedite vaše ime i prezime.
-\author{	Katarina Matić,
+\author{	
 	Hrvoje Backović,
+	Katarina Matić,
 	Marin Oršić,\\
 	Dino Rakipović,
 	Ivan Relić,
@@ -47,6 +49,15 @@
 
 \chapter{Projektni zadatak}
 \section{Opis projektnog zadatka}
+
+\paragraph{}
+U sklopu ovog projekta potrebno je implementirati sustav koji pruža funkcionalnost reverzibilne deidentifikacije uporabom steganografije.
+\paragraph{}
+Deidentifikacija podataka odnosi se na proces pri kojem se informacije koje mogu identificirati neku osobu uklanjaju iz podataka ili se učine nejasnima tako da ih druga osoba koja ne bi trebala imati uvid u identitet osobe ne može protumačiti. Način na koji se deidentifikacija provodi ovisi o podatcima i njihovoj namjeni, ali je u svakom slučaju potrebno zaštititi identitet osobe od koje podatci potječu. Pri tome, podatci mogu biti slike, tekstovi, ankete, podatci o zdravlju osobe i slično. Deidentifikacija može biti reverzibilni ili jednosmjerni postupak, što znači  da se podatci koji se sakrivaju mogu ili ne mogu povratiti u originalni oblik. Postupak koji implementiramo je reverzibilan i često se koristi pri izvođenju raznih medicinskih istraživanja i anketa kako bi se zaštitili podatci sudionika u istraživanjima.
+\paragraph{}
+Steganografija podrazumijeva spremanje tj. skrivanje podataka unutar drugih podataka. Koristi se umjesto kriptografije ili u paru s kriptografijom tako da se tajni podatak prvo zaštiti kriptografski te se potom steganografski spremi unutar nekih podataka koji su javni. Iako steganografija ne štiti podatke šiframa, prednost joj je ta da je teško primijetiti da su tajni podatci uopće spremljeni unutar nekih drugih, javnih podataka. U modernoj digitalnoj steganografiji uobičajeno je podatke enkriptirati i potom pomoću algoritma umetnuti u redundantni dio datoteke u koju se podatci skrivaju. Ako to nije moguće, spremaju se u dio datoteke za koji je najmanje vjerojatno da će se otkriti skrivanje podataka. Pritom se skriveni podatci ili uopće ne primjećuju ili se manifestiraju kao šum. 
+\paragraph{}
+Dakle, u okviru ovog projekta potrebno je unutar datoteke spremiti drugu uz mogućnost vraćanja skrivene datoteke. Ulazni podatci pri skrivanju podataka biti će biti slikovne datoteke, a izlazni također slikovne datoteke u \textit{bmp} formatu koje sadrže skrivene podatke. U obrnutom postupku, pri ekstrakciji skrivenih podataka, ulazni podatak je slika sa skrivenim podatcima, a izlaz skriveni podatci. 
 \section{Pregled i opis srodnih rješenja}
 
 \paragraph{}
@@ -70,8 +81,35 @@ Kod prenošenja slika, često se provodi kompresija slike prije slanja. Ovaj kon
 \textit{Lossy} kompresija reducira količinu informacije koju je potrebno prenijeti tako da trajno gubi dio informacija sa slike, najčešće redundantne informacije. Miču se oni detalji koje ljudsko oko ne može razlikovati, što rezultira u dobroj aproksimaciji originalne slike, ali koja se ipak razlikuje od originala. \textit{JPEG (Joint Photographic Experts Group}) je jedan od slikovnih formata koji koriste lossy kompresiju. Takav format slike nije pogodan za naš algoritam jer \textit{LSB} steganografski postupak upisuje poruku u najmanje bitne dijelove slike kako bi minimizirali promjene na slici, ali to su upravo oni bitovi koje \textit{JPEG} odbacuje kako bi sačuvao prostor.
 \paragraph{}
 S druge strane, \textit{lossless} kompresija nikad ne odbacuje informacije iz slike nad kojom radi kompresiju, tako da se svaki bit informacije može povratiti u originalno stanje nakon dekompresije. \textit{GIF (Graphical Interchange Format)} i \textit{BMP (Bit Map File)} su formati slika koji koriste "lossless" kompresiju. BMP format je upravo onaj koji koristimo u našem projektu i najpogodniji je za \textit{LSB} steganografski postupak koji smo implementirali. Također se isti postupak može primijeniti i na \textit{GIF} slike, iako valja biti oprezan pri tome.
+
 \paragraph{}
-Algoritam koji se primijenjuje u ovom projektu se naziva \textit{LSB (Least Significant Bit)} postupak, a poruke kodiramo unutar \textit{BMP} slika. Algoritam funkcionira na način da najniže bitove svakog piksela zamijenimo sa bitovima iz poruke. Zato što koristimo najniže bitove, razlika u odnosu na originalnu sliku će biti praktički nezamjetna što znači da ovaj algoritam ima visoku transparentnost. Dodatno se ta transparentnost može povećati za manje poruke tako da postavimo prioritete na kanale (crvena, zelena, plava) kojima mijenjamo bitove. Pokazalo se da je ljudsko oko najmanje osjetljivo na promjene u plavom kanalu, stoga je logično da prvo želimo te bitove mijenjati.
+Nadalje imamo još neke postupke iz slikovne domene, koje nazivamo \textit{mod} postupci. Često se koristi mod10 koji svakom pikselu oduzme njegov ostatak pri dijeljenju sa 10 te mu nadoda bitove iz poruke, opet iz intervala [0,9]. Ovaj postupak je lakše za implementirati od običnog LSB algoritma te se dosta koristi pogotovo na crno-bijelim slikama. Rekonstrukcija poruke iz ovako kodirane slike se također lagano provodi: jednostavno iz svakog piksela izvadimo njegov ostatak pri dijeljenju sa 10.
+\paragraph{}
+Još jedan predstavnik steganografskih postupaka iz slikovne domene je \textit{patchwork}. Taj postupak daje pseudoslučajni, statistički model koji višestruko skriva istu poruku na slici. Radi na principu da odabire slučajno po dva područja (\textit{patch}-a) na slici te jednome poveća intenzitet za neku konstantu, dok drugome smanji za konstantu. Time se osigurava da je očekivana promjena intenziteta jednaka 0 što uvelike pomaže da postupak bude visoko transparentan. Ono što je dobro kod ovog algoritma je što je otporan na neke transformacije slike kao što je npr rezanje dijelova slike ili rotacije, upravo zato što se ista poruka kodira na više mjesta na slici. S druge strane, ta činjenica dovodi do loše strane ovog pristupa a to je mali kapacitet. Zato se ovaj pristup koristi samo kada treba prenijeti male poruke.
+\paragraph{}
+Osvrnut ćemo se još malo na format slika \textit{JPEG}. Taj format je jedan od najkorištenijih formata općenito te su osmišljeni brojni steganografski postupci koji dobro rade upravo za ovaj format. \textit{JPEG} slike koriste lossy kompresiju i to na način da se izvede prvo diskretna kosinusna transformacija (\textit{DCT}) nad slikom te se spremaju koeficijenti koji se dobiju, a nakon toga se Huffmanovim kodiranjem komprimiraju ti koeficijenti. Rekonstrukcijom iz tih koeficijenata se dobiva dobra (ali ipak ne savršena) aproksimacija originalne slike. Zato što je kompresija \textit{lossy}, algoritmi koje smo dosad spomenuli ne mogu se primijeniti direktno na ovom formatu slika, ali je moguće primijeniti \textit{LSB} nad samim koeficijentima prije Huffmanovog kodiranja, jer će slični koeficijenti dati slične slike, a sami Huffmanov postupak je lossless kompresija što znači da će se poruka sačuvati.
+\paragraph{}
+Osim pristupa iz porodice \textit{LSB} algoritama, pogledat ćemo i neke postupke iz transformacijske domene. Postupci iz transformacijske domene su općenito robusniji od onih iz slikovne domene pa su jako korisni u slučajevima kada je slika podvrgnuta raznim transformacijama jer su relativno otporni na promjene u kodiranoj slici. Također, ovi postupci općenito imaju i veliki kapacitet te je moguće sakriti čak cijelu sliku unutar druge slike.
+\paragraph{}
+Jedan od tih postupaka je takozvani \textit{Spread-spectrum} postupak. On spada i u slikovnu domenu i u transformacijsku, ovisno o implementaciji. Originalno se koristi za ubacivanje tajnih zvučnih poruka u zvučne signale, ali se isti princip može primijeniti i na slikama. Algoritam se temelji na tome da se informacija koja se želi sakriti prikaže kao signal definiran na uskom području frekvencija i koji je općenito velike snage. Zatim se taj signal rastegne preko većeg raspona frekvencija, a time se i snaga smanji. Takav signal male snage će zapravo biti šum koji možemo ubaciti u drugi signal. Zbog niske snage, naša poruka će biti dobro skrivena(zagušena) i neće se čuti praktički nikakva razlika u odnosu na originalni signal. Kada signal dođe na odredište, poruka se može izvaditi iz signala korištenjem raznih filtera.  Slika \ref{transfrom} prikazuje transformaciju poruke u signal male snage i velikog raspona frekvencija.
+\begin{figure}
+\caption{Transformacija tajne poruke u signal male snage}
+\label{transfrom}
+\centerline{\includegraphics[scale=0.8]{images/transformation.png}}
+\end{figure}
+\paragraph{}
+Jedni od najpoznatijih postupaka iz transformacijske domene su postupci koji se temelje na diskretnim transformacijama signala/slika. Konkretno, tu se koriste razne diskretne transformacije: kosinusna, Fourierova, transformacija valića itd. Ti postupci imaju veliki kapacitet i jako su povoljni za skrivanje slika unutar drugih slika. Funkcioniraju tako da se zbroje transformacije od originalne i skrivene slike putem enkodera te se iz tog zbroja izvuče slika koja se šalje. Zatim se na primateljevom kraju ta slika opet kombinira sa originalnom kako bi se mogao izvući onaj dio transformacije koji odgovara skrivenoj poruci. Pomoću inverzne diskretne transformacije se skrivena slika zatim rekonstruira. Slika \ref{dwt} prikazuje model steganografskog postupka koji se temelji na diskretnoj transformaciji valića (\textit{Discrete Wavelet Transform}).
+\begin{figure}
+\caption{Model steganografskog postupka temeljen na diskretnoj transformaciji valića (\textit{DWT})}
+\label{dwt}
+\centerline{\includegraphics[scale=0.6]{images/dwt.png}}
+\end{figure}
+\paragraph{}
+Opisali smo neke od brojnih steganografskih postupaka i pokazali u kojim situacijama se koriste. Svaki od tih postupaka ima svoje dobre strane i mane stoga je potrebno ovisno o problemu izabrati onaj pravi. U ovom projektu se za zadani problem koristi obični \textit{LSB} postupak zbog svoje jednostavnosti, a dovoljno je dobar za praktičnu primjenu, ali uvijek treba imati na umu i ostale postupke koji su nam na raspolaganju. 
+%%end Backo
+\section{Konceptualno rješenje zadatka}
+\paragraph{}
+Algoritam koji se primjenjuje u ovom projektu se naziva \textit{LSB (Least Significant Bit)} postupak, a poruke kodiramo unutar \textit{BMP} slika. Algoritam funkcionira na način da najniže bitove svakog piksela zamijenimo sa bitovima iz poruke. Zato što koristimo najniže bitove, razlika u odnosu na originalnu sliku će biti praktički nezamjetna što znači da ovaj algoritam ima visoku transparentnost. Dodatno se ta transparentnost može povećati za manje poruke tako da postavimo prioritete na kanale (crvena, zelena, plava) kojima mijenjamo bitove. Pokazalo se da je ljudsko oko najmanje osjetljivo na promjene u plavom kanalu, stoga je logično da prvo želimo te bitove mijenjati.
 \paragraph{}
 S druge strane, pošto koristimo samo najniže bitove, kapacitet odnosno veličina podataka koju možemo sakriti u sliku je dosta ograničena. Ako koristimo \textit{BMP} gdje svaki piksel zauzima 24 bita (po 8 bitova za crvenu, zelenu i plavu boju) te ako  mijenjamo samo najniži bit, možemo spremiti 3 bita u svaki piksel tako da promijenimo najniži bit od svake  boje. Za sliku rezolucije 800x600 piksela, moguće je sakriti poruku maksimalne veličine 1,440,000 bitova, odnosno 180,000 okteta. Moguće je zamijeniti najnižih nekoliko bitova bez da bude velike promjene na slici, ali više od toga dovodi do slabe transparentnosti. Za naš projekt želimo lica sa slike izdvojiti i kodirati u najniže bitove te zamutiti originalno lice tako da se na prvi pogled ne zna tko je na slici, ali je ta informacija sadržana u tajnoj poruci. Ovaj algoritam dobro funkcionira za lica koja nisu prevelika, ali za velika lica, slika će biti vidljivo promijenjena zbog ograničenog kapaciteta.
 \paragraph{}
@@ -89,35 +127,28 @@ Također je ovaj postupak osjetljiv na promjene poruke, odnosno moguće je promi
 Kao što je već spomenuto, \textit{LSB} steganografski postupci se mogu koristiti i na \textit{GIF} slikama jer one koriste lossless kompresiju (konkretno, \textit{LZW} kompresiju), ali valja biti oprezan. Problem je u tome što \textit{GIF} slike spremaju različite boje koje se koriste u takozvanu tablicu "paletu boja", gdje je svakoj boji dodijeljen indeks u toj tablici. U takvoj slici su svi pikseli definirani samo indeksom u toj paleti pa je bitno paziti jer bliski indeksi u paleti boja mogu rezultirati potpuno različitim bojama pa nije dobro izravno primjenjivati \textit{LSB} postupak. Taj problem se može riješiti tako da se sortiraju boje u paleti, što će dovesti do toga da slični indeksi rezultiraju sličnim bojama pa je onda moguće raditi običan LSB algoritam.
 \paragraph{}
 Drugi način za doskočiti ovom problemu je da uvodimo nove boje u paletu koje su vizualno slične već postojećim bojama u paleti. Ovo zahtijeva da je broj korištenih boja u paleti manji od maksimalnog broja boja pa je potrebno paziti u kakve slike skrivamo poruke. Još jedan način rješavanja ovog problema je da koristimo crno-bijele slike gdje imamo 256 različitih nijansi sive gdje je promjena u nijansama vrlo postepena i teža za uočiti.
-\paragraph{}
-Nadalje imamo još neke postupke iz slikovne domene, koje nazivamo \textit{mod} postupci. Često se koristi mod10 koji svakom pikselu oduzme njegov ostatak pri dijeljenju sa 10 te mu nadoda bitove iz poruke, opet iz intervala [0,9]. Ovaj postupak je lakše za implementirati od običnog LSB algoritma te se dosta koristi pogotovo na crno-bijelim slikama. Rekonstrukcija poruke iz ovako kodirane slike se također lagano provodi: jednostavno iz svakog piksela izvadimo njegov ostatak pri dijeljenju sa 10.
-\paragraph{}
-Još jedan predstavnik steganografskih postupaka iz slikovne domene je \textit{patchwork}. Taj postupak daje pseudoslučajni, statistički model koji višestruko skriva istu poruku na slici. Radi na principu da odabire slučajno po dva područja (\textit{patch}-a) na slici te jednome poveća intenzitet za neku konstantu, dok drugome smanji za konstantu. Time se osigurava da je očekivana promjena intenziteta jednaka 0 što uvelike pomaže da postupak bude visoko transparentan. Ono što je dobro kod ovog algoritma je što je otporan na neke transformacije slike kao što je npr rezanje dijelova slike ili rotacije, upravo zato što se ista poruka kodira na više mjesta na slici. S druge strane, ta činjenica dovodi do loše strane ovog pristupa a to je mali kapacitet. Zato se ovaj pristup koristi samo kada treba prenijeti male poruke.
-\paragraph{}
-Osvrnut ćemo se još malo na format slika \textit{JPEG}. Taj format je jedan od najkorištenijih formata općenito te su osmišljeni brojni steganografski postupci koji dobro rade upravo za ovaj format. \textit{JPEG} slike koriste lossy kompresiju i to na način da se izvede prvo diskretna kosinusna transformacija (\textit{DCT}) nad slikom te se spremaju koeficijenti koji se dobiju, a nakon toga se Huffmanovim kodiranjem komprimiraju ti koeficijenti. Rekonstrukcijom iz tih koeficijenata se dobiva dobra (ali ipak ne savršena) aproksimacija originalne slike. Zato što je kompresija \textit{lossy}, algoritmi koje smo dosad spomenuli ne mogu se primjeniti direktno na ovom formatu slika, ali je moguće primjeniti \textit{LSB} nad samim koeficijentima prije Huffmanovog kodiranja, jer će slični koeficijenti dati slične slike, a sami Huffmanov postupak je lossless kompresija što znači da će se poruka sačuvati.
-\paragraph{}
-Osim pristupa iz porodice \textit{LSB} algoritama, pogledat ćemo i neke postupke iz transformacijske domene. Postupci iz transformacijske domene su općenito robusniji od onih iz slikovne domene pa su jako korisni u slučajevima kada je slika podvrgnuta raznim transformacijama jer su relativno otporni na promjene u kodiranoj slici. Također, ovi postupci općenito imaju i veliki kapacitet te je moguće sakriti čak cijelu sliku unutar druge slike.
-\paragraph{}
-Jedan od tih postupaka je takozvani \textit{Spread-spectrum} postupak. On spada i u slikovnu domenu i u transformacijsku, ovisno o implementaciji. Originalno se koristi za ubacivanje tajnih zvučnih poruka u zvučne signale, ali se isti princip može primjeniti i na slikama. Algoritam se temelji na tome da se informacija koja se želi sakriti prikaže kao signal definiran na uskom području frekvencija i koji je općenito velike snage. Zatim se taj signal rastegne preko većeg raspona frekvencija, a time se i snaga smanji. Takav signal male snage će zapravo biti šum koji možemo ubaciti u drugi signal. Zbog niske snage, naša poruka će biti dobro skrivena(zagušena) i neće se čuti praktički nikakva razlika u odnosu na originalni signal. Kada signal dođe na odredište, poruka se može izvaditi iz signala korištenjem raznih filtera.  Slika \ref{transfrom} prikazuje transformaciju poruke u signal male snage i velikog raspona frekvencija.
-\begin{figure}
-\caption{Transformacija tajne poruke u signal male snage}
-\label{transfrom}
-\centerline{\includegraphics[scale=0.8]{images/transformation.png}}
-\end{figure}
-\paragraph{}
-Jedni od najpoznatijih postupaka iz transformacijske domene su postupci koji se temelje na diskretnim transformacijama signala/slika. Konkretno, tu se koriste razne diskretne transformacije: kosinusna, Fourierova, transformacija valića itd. Ti postupci imaju veliki kapacitet i jako su povoljni za skrivanje slika unutar drugih slika. Funkcioniraju tako da se zbroje transformacije od originalne i skrivene slike putem enkodera te se iz tog zbroja izvuče slika koja se šalje. Zatim se na primateljevom kraju ta slika opet kombinira sa originalnom kako bi se mogao izvući onaj dio transformacije koji odgovara skrivenoj poruci. Pomoću inverzne diskretne transformacije se skrivena slika zatim rekonstruira. Slika \ref{dwt} prikazuje model steganografskog postupka koji se temelji na diskretnoj transformaciji valića (\textit{Discrete Wavelet Transform}).
-\begin{figure}
-\caption{Model steganografskog postupka temeljen na diskretnoj transformaciji valića (\textit{DWT})}
-\label{dwt}
-\centerline{\includegraphics[scale=0.6]{images/dwt.png}}
-\end{figure}
-\paragraph{}
-Opisali smo neke od brojnih steganografskih postupaka i pokazali u kojim situacijama se koriste. Svaki od tih postupaka ima svoje dobre strane i mane stoga je potrebno ovisno o problemu izabrati onaj pravi. U ovom projektu se za zadani problem koristi obični \textit{LSB} postupak zbog svoje jednostavnosti, a dovoljno je dobar za praktičnu primjenu, ali uvijek treba imati na umu i ostale postupke koji su nam na raspolaganju. 
-%%end Backo
-\section{Konceptualno rješenje zadatka}
-
 \chapter{Postupak rješavanja zadataka}
-
+\paragraph{}
+1. Preprocesiranje originalne slike, 2. Skrivanje odabranih podataka u sliku, 3. Ekstrakcija originalne slike
+\section{Pretprocesiranje originalne slike}
+\paragraph{}
+Ulaz ovog koraka je slika koju korisnik predaje programu, a toj slici nije zadan format. Izlaz koraka je slika kojoj je zacrnjeno područje koje bi moglo identificirati osobu sa slike. Ukoliko korisnik odabere ovaj opcionalan korak, provest će se sljedeći postupak.
+\subsection{Zacrnjivanje odabranog dijela slike}
+\paragraph{}
+Ovaj korak je opcionalan i izvršava se samo ako je korisnik odabrao da želi zacrniti lice osobe sa slike. Originalna slika koju je korisnik predao se kopira. Korisnik odabire dio slike koji želi zacrniti pri čemu nam postaju poznate koordinate na slici, rubovi područja koje treba zacrniti. Zatim se prolaskom kroz piksele slike zacrnjuje odabrano područje.
+\section{Skrivanje odabranih podataka u sliku}
+\paragraph{}
+Ukoliko je korisnik odabrao prethodni korak, ulaz ovog koraka je slika sa zacrnjenim područjem koje ni moglo identificirati osobu na slici te taj, odabrani dio slike koji treba sakriti. Ako je korisnik umjesto zacrnjivanja odabrao sakriti drugu sliku, ulaz je originalna slika i slika koju je u nju potrebno sakriti. Izlaz je slika u bmp formatu u kojoj su sakriveni odabrani podatci.
+\subsection{LSB algoritam}
+\paragraph{}
+Ulazni podatci ovog algoritma su, uz sliku u koju se spremaju podatci i sliku koju treba spremiti, broj komponenti boje te broj bitova po komponenti koji će se koristiti za steganografsko spremanje slike. Prvo se koristi plava, zatim zelena pa crvena komponenta boje. Na sljedeći značajniji bit se prelazi nakon što su iskorišteni svi manje značajni bitovi svih odabranih komponenti. Moguće je iskoristiti između 1 i 8 bitova po komponenti za skrivanje podataka. Provjerava se koja je veličina podataka koje korisnik želi spremiti te se upozorava ukoliko je odabrao premalo komponenti ili bitova po komponenti.
+Podatci koji se trebaju sakriti predaju se u obliku polja bajtova. Prvo se u sliku zapisuje količina skrivenih podataka kako bi se oni kasnije mogli vratiti. Nakon toga se podatci upisuju u zadani broj manje značajnih bitova redom u plavu, zelenu pa crvenu komponentu.
+\section{Ekstrakcija originalne slike}
+\paragraph{}
+Potrebno je omogućiti reverzibilnost deidentifikacije, što znači da korisnik mora moći vratiti sliku koja je zapisana u drugu sliku. Zato je ulaz ovog koraka slika sa steganografski zapisanim podatcima, a izlaz skriveni podatci.
+\subsection{Algoritam ekstrakcije podataka}
+\paragraph{}
+Prvo se iz slike vadi broj koji označava količinu skrivenih podataka kako bi se taj broj mogao iskoristiti u vađenju podataka iz slike. Dakle, za ekstrakciju podataka ulazni podatci su slika sa steganografski zapisanim podatcima i količina podataka. Algoritmu je još od koraka 2.2 poznat i broj komponenti i bitova koji se koristio za skrivanje. Budući da su mu poznati svi podatci o skrivenoj slici, algoritam ide po bajtovima slike i ovisno o tome koji se broj bitova i komponenti koristi, vadi i sprema podatke u obliku polja bajtova. Nakon toga te bajtove zapisuje u datoteku i sprema je. Sada korisnik može vidjeti podatke koji su u koraku 2.2. bili skriveni.
 \chapter{Ispitivanje rješenja}
 \paragraph{}
 Razvijeni sustav za steganografski postupak, kao i svi steganografski algoritmi, ograničen je količinom podataka koja se može upisati u neku sliku. Ova granica prvenstveno je određena veličinom slike, a određuju je i odabir kanala te najznačajniji bit do kojeg se upisuju podaci. Glavna ideja steganografskog algoritma jest upisati podatak u sliku bez velikog utjecaja na konačni izgled. Drugim riječima, izgled konačne slike uvjetovan je količinom podataka koji se u nju upisuju. Potrebno je pronaći dobre parametre steganografskog algoritma koji nude dobara kapacitet skrivenih podataka, a neznatno žrtvuju kvalitetu izvorne slike.
@@ -166,7 +197,7 @@ Ispitivanje algoritma \textit{LSB} napravljeno je nad dvjema različitim slikama
 
 \section{Rezultati ispitivanja}
 \paragraph{}
-Tablice \ref{table_chart} i \ref{pattern_original} prikazuju obređene slike algoritmom \textit{LSB} za vrijednosti parametara $n_{components}$ i $n_{bits}$. Treći stupac, $\eta$, prikazuje udio upisanih podataka u ukupnoj veličini slike.
+Tablice \ref{table_chart} i \ref{pattern_original} prikazuju obrađene slike algoritmom \textit{LSB} za vrijednosti parametara $n_{components}$ i $n_{bits}$. Treći stupac, $\eta$, prikazuje udio upisanih podataka u ukupnoj veličini slike.
 \begin{center}
 \begin{longtable}{|c|c|c|c|}
 \caption{Osjetljivost kvalitete slike jednostavnih boja na \textit{LSB} u ovisnosti o parametrima $n_{components}$ i $n_{bits}$}\\
@@ -259,7 +290,7 @@ Tablice \ref{table_chart} i \ref{pattern_original} prikazuju obređene slike alg
 
 \section{Analiza rezultata}
 \paragraph{}
-Ispitivanje je pokazalo kako upisana količina podataka znatno može utjecati na promjenu izgleda izvorne slike. Bez obzira na prirodu izvorne slike, za $\eta$ > 50\% obrađena slika sadrži znatnu količinu šuma, i nikako se ne preporučuje korištenje algoritma s parametrima $n_{bits}$ i $n_{componets}$ za $\eta$ > 50\%. Nadalje, parametri $n_{bits}$ i $n_{componets}$ za $\eta$ < 25\% generiraju slike za koje se ne može razlučiti da je nad njima vršena obrada. Iz ovog područja algoritam se najbolje ponaša za one parametre koji svaki kanal mijenaju u istoj mjeri iz razloga što je za te parametre izgled kontrasta na obrađenim slikama najprirodniji(svaka boja mijenja se u istj mjeri). Za $\eta \in$ [25\%, 50\%] algoritam daje prihvatljiva rješenja, ali samo za one parametre koji svaku komponentu boje mijenjaju u istoj mjeri. Za parametre iz tog intervala koji primjerice mijenjaju 7 bitova samo jedne komponente, slika poprima neprirodan izgled i u velikoj mjeri odskače od izgleda izvorne slike.
+Ispitivanje je pokazalo kako upisana količina podataka znatno može utjecati na promjenu izgleda izvorne slike. Bez obzira na prirodu izvorne slike, za $\eta$ > 50\% obrađena slika sadrži znatnu količinu šuma, i nikako se ne preporučuje korištenje algoritma s parametrima $n_{bits}$ i $n_{componets}$ za $\eta$ > 50\%. Nadalje, parametri $n_{bits}$ i $n_{componets}$ za $\eta$ < 25\% generiraju slike za koje se ne može razlučiti da je nad njima vršena obrada. Iz ovog područja algoritam se najbolje ponaša za one parametre koji svaki kanal mijenjaju u istoj mjeri iz razloga što je za te parametre izgled kontrasta na obrađenim slikama najprirodniji(svaka boja mijenja se u istoj mjeri). Za $\eta \in$ [25\%, 50\%] algoritam daje prihvatljiva rješenja, ali samo za one parametre koji svaku komponentu boje mijenjaju u istoj mjeri. Za parametre iz tog intervala koji primjerice mijenjaju 7 bitova samo jedne komponente, slika poprima neprirodan izgled i u velikoj mjeri odskače od izgleda izvorne slike.
 \paragraph{}
 Analiza rezultata potvrđuje izvornu hipotezu da je algoritam osjetljiv na količinu podataka koji se upisuju na sliku. Najbolji rezultati ostvareni su za parametre koji mijenjaju do 2 najmanje značajna bita svake komponente(za $\eta \in$ [0\%, 25\%]), što u konačnici znači da se u svaku sliku može upisati količina podataka koja odgovara četvrtini veličine izvorne slike.
 \chapter{Opis programske implementacije rješenja}
@@ -307,7 +338,7 @@ Pokretanjem aplikacije vidljivo je kako je kroz grafičko korisničko sučelje m
 \centerline{\includegraphics[scale=0.4]{images/app_home_screen_hide.png}}
 \end{figure}
 
-Slika \ref{app_home_screen_hide} prikazuje početni ekran aplikacije kada je odabran način rada za sakrivanje podataka. Pritiskom na tipku \textit{Load image...} otvara se prozor za odabir slike koja će se koristiti za skrivanje podataka. Ispod tipke za učitavanje slike nalazi se informacija o tome koliko bajtova je maksimalno moguće steganografski zapisati u učitanu sliku koristeći odabrane parametre. Također, ukoliko se koristi označeno područje za sakrivanje podataka, također je prikazana i približna veličina odabranog područja u bajtovima. Kućica \textit{Use selection as data to hide} predstavlja izbor hoće li se sakrivati podaci koji su označeni na slici ili će se koristiti podaci koje je moguće učitati pritiskom na tipku \textit{Load data to hide}. Kućica \textit{Hide selection} označava izbor hoće li se na slici podaci koji su označeni prekriti crnim pravokutnikom u svrhu skrivanja. Navedene kućice možemo koristiti u svrhu reverzibilne deidentifikacije tako da na slici označimo identifikacijske značajke osobe i označimo obe kućice. Algoritam će koristiti podatke sa slike kao podatke koji se steganografski upisuju i sakrit će označeno područje na originalnoj slici. Iz dobivene slike se naknadno ekstrakcijom mogu izlučiti sakrivene identifikacijske značajke osobe. Padajući izbornik \textit{Color components to use per pixel} omogućuje odabir koliko komponenti boje će se koristiti za sakrivanje podataka. Komponente se koriste sljedećim redoslijedom: prvo plava komponenta, zatim zelena komponenta te naposlijetku crvena komponenta. Padajući izbornik \textit{Bits to use per color component} omogućuje odabir koliko bitova po komponenti boje će se koristiti za steganografsko zapisivanje podataka u sliku. 
+Slika \ref{app_home_screen_hide} prikazuje početni ekran aplikacije kada je odabran način rada za sakrivanje podataka. Pritiskom na tipku \textit{Load image...} otvara se prozor za odabir slike koja će se koristiti za skrivanje podataka. Ispod tipke za učitavanje slike nalazi se informacija o tome koliko bajtova je maksimalno moguće steganografski zapisati u učitanu sliku koristeći odabrane parametre. Također, ukoliko se koristi označeno područje za sakrivanje podataka, također je prikazana i približna veličina odabranog područja u bajtovima. Kućica \textit{Use selection as data to hide} predstavlja izbor hoće li se sakrivati podaci koji su označeni na slici ili će se koristiti podaci koje je moguće učitati pritiskom na tipku \textit{Load data to hide}. Kućica \textit{Hide selection} označava izbor hoće li se na slici podaci koji su označeni prekriti crnim pravokutnikom u svrhu skrivanja. Navedene kućice možemo koristiti u svrhu reverzibilne deidentifikacije tako da na slici označimo identifikacijske značajke osobe i označimo obje kućice. Algoritam će koristiti podatke sa slike kao podatke koji se steganografski upisuju i sakrit će označeno područje na originalnoj slici. Iz dobivene slike se naknadno ekstrakcijom mogu izlučiti sakrivene identifikacijske značajke osobe. Padajući izbornik \textit{Color components to use per pixel} omogućuje odabir koliko komponenti boje će se koristiti za sakrivanje podataka. Komponente se koriste sljedećim redoslijedom: prvo plava komponenta, zatim zelena komponenta te naposljetku crvena komponenta. Padajući izbornik \textit{Bits to use per color component} omogućuje odabir koliko bitova po komponenti boje će se koristiti za steganografsko zapisivanje podataka u sliku. 
 
 \begin{figure}[H]
 \caption{Aktivna selekcija dijela slike prilikom sakrivanja podataka}
@@ -358,6 +389,12 @@ Osnovna namjena korištenja aplikacije je reverzibilna deidentifikacija osoba na
 U smislu poboljšanja postupka, budući rad mogao bi ići u smjeru promjene načina na koji se raspoznaju identifikacijske značajke na slici. Trenutna implementacija je takva da korisnik sam odabere područje koje sadrži identifikacijske značajke na slici i da mu je ponuđeno da sakrije i steganografski upiše te podatke u samu sliku. Budući rad za unapređenje sustava bio bi algoritam koji bi automatski raspoznavao područja koja sadrže identifikacijske značajke na slici i sakrivao ih te steganografski upisivao u sliku. Nadalje, mogući rad mogao bi ići i u smjeru povećanja sigurnosti sustava, odnosno većoj zaštiti identiteta osobe na slici korištenjem enkripcije. Sustav bi trebalo promijeniti tako da podatke prije samog steganografskog upisivanja u sliku zaštiti nekim enkripcijskom algoritmom koristeći ključ koji je poznat samo stranama ovlaštenima za pristup identifikacijskim podacima.
 
 \bibliography{literatura}
-\bibliographystyle{fer}
-
+\begin{itemize}
+  \item http://ijact.org/volume3issue4/IJ0340004.pdf
+  \item http://www.sersc.org/journals/IJAST/vol54/11.pdf
+  \item http://www.airccse.org/journal/ijcses/papers/4113ijcses02.pdf
+  \item http://www.ijtre.com/manuscript/2014010955.pdf
+  \item http://martinolivier.com/open/stegoverview.pdf
+  \item http://www.ws.binghamton.edu/fridrich/Research/benchmark04.pdf
+\end{itemize}
 \end{document}

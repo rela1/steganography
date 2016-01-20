@@ -1,6 +1,7 @@
 out/
 .idea/
 RU.iml
+BMPSteg.iml
 doc/seminar.pdf
 doc/texput.log
 doc/seminar.log
