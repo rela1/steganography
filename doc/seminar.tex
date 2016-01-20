@@ -1,4 +1,4 @@
-\documentclass[times, utf8, seminar]{fer}
+\documentclass[times, utf8, seminar, numeric]{fer}
 \usepackage{booktabs}
 %math packages
 \usepackage{authblk}
@@ -9,6 +9,7 @@
 \usepackage{longtable}
 \usepackage{adjustbox}
 \usepackage{float}
+\usepackage{url}
 
 %%floor symbol
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
@@ -105,7 +106,7 @@ Jedni od najpoznatijih postupaka iz transformacijske domene su postupci koji se 
 \centerline{\includegraphics[scale=0.6]{images/dwt.png}}
 \end{figure}
 \paragraph{}
-Opisali smo neke od brojnih steganografskih postupaka i pokazali u kojim situacijama se koriste. Svaki od tih postupaka ima svoje dobre strane i mane stoga je potrebno ovisno o problemu izabrati onaj pravi. U ovom projektu se za zadani problem koristi obični \textit{LSB} postupak zbog svoje jednostavnosti, a dovoljno je dobar za praktičnu primjenu, ali uvijek treba imati na umu i ostale postupke koji su nam na raspolaganju. 
+Opisali smo neke od brojnih steganografskih postupaka i pokazali u kojim situacijama se koriste. Svaki od tih postupaka ima svoje dobre strane i mane stoga je potrebno ovisno o problemu izabrati onaj pravi. U ovom projektu se za zadani problem koristi obični \textit{LSB} postupak zbog svoje jednostavnosti, a dovoljno je dobar za praktičnu primjenu, ali uvijek treba imati na umu i ostale postupke koji su nam na raspolaganju \cite{ijast_steg}, \cite{ijcses_steg}, \cite{ijtre_steg}.
 %%end Backo
 \section{Konceptualno rješenje zadatka}
 \paragraph{}
@@ -117,14 +118,14 @@ Nadalje, \textit{LSB} postupak ima prednost nad ostalim algoritmima po tome što
 \paragraph{}
 Također je ovaj postupak osjetljiv na promjene poruke, odnosno moguće je promijeniti poruku koja se kodira ako je poznat način na koji se poruka kodira u sliku. Tome je moguće pristupiti na način da pošiljatelj i primatelj dijele tajni ključ koji specificira točno koji pikseli će se mijenjati (i kojim redoslijedom). U slučaju da napadač otkrije da postoji tajna poruka unutar slike, bez ključa će biti nemoguće znati točno koje piksele je potrebno promijeniti da bi promijenio poruku u nešto smisleno.
 \paragraph{}
-\textit{LSB} postupak koji se koristi u ovom projektu je općenito dio porodice \textit{LSB} steganografskih postupaka koji su razvijeni za različite primjene, ali svi u načelu imaju iste prednosti i mane te su neki varijacije ili poboljšanja istoga. Stoga ćemo spomenuti takozvanu \textit{Optimum pixel adjustment procedure} što je poboljšanje običnog \textit{LSB} postupka. Ta procedura funkcionira na način da dodatno mijenja još neke bitove u pikselima (koji nisu dio poruke koja se kodira) s ciljem da dobiveni intenzitet piksela bude što bliži originalnom. Slika \ref{lsb_cmp} prikazuje jedan jednostavan primjer gdje se može vidjeti kako ova procedura daje bolji rezultat od običnog \textit{LSB}-a. Prednost ove procedure je što steg-slika sadrži manje distorzije i stoga je sličnija originalnoj slici i time ima veću transparentnost.
+\textit{LSB} postupak koji se koristi u ovom projektu je općenito dio porodice \textit{LSB} steganografskih postupaka koji su razvijeni za različite primjene, ali svi u načelu imaju iste prednosti i mane te su neki varijacije ili poboljšanja istoga. Stoga ćemo spomenuti takozvanu \textit{Optimum pixel adjustment procedure} što je poboljšanje običnog \textit{LSB} postupka. Ta procedura funkcionira na način da dodatno mijenja još neke bitove u pikselima (koji nisu dio poruke koja se kodira) s ciljem da dobiveni intenzitet piksela bude što bliži originalnom. Slika \ref{lsb_cmp} prikazuje jedan jednostavan primjer gdje se može vidjeti kako ova procedura daje bolji rezultat od običnog \textit{LSB}-a. Prednost ove procedure je što steg-slika sadrži manje distorzije i stoga je sličnija originalnoj slici i time ima veću transparentnost \cite{ijact_lsb}.
 \begin{figure}
 \caption{\textit{Optimum pixel adjustment procedure}}
 \label{lsb_cmp}
 \centerline{\includegraphics[scale=0.8]{images/LSB_cmp.png}}
 \end{figure}
 \paragraph{}
-Kao što je već spomenuto, \textit{LSB} steganografski postupci se mogu koristiti i na \textit{GIF} slikama jer one koriste lossless kompresiju (konkretno, \textit{LZW} kompresiju), ali valja biti oprezan. Problem je u tome što \textit{GIF} slike spremaju različite boje koje se koriste u takozvanu tablicu "paletu boja", gdje je svakoj boji dodijeljen indeks u toj tablici. U takvoj slici su svi pikseli definirani samo indeksom u toj paleti pa je bitno paziti jer bliski indeksi u paleti boja mogu rezultirati potpuno različitim bojama pa nije dobro izravno primjenjivati \textit{LSB} postupak. Taj problem se može riješiti tako da se sortiraju boje u paleti, što će dovesti do toga da slični indeksi rezultiraju sličnim bojama pa je onda moguće raditi običan LSB algoritam.
+Kao što je već spomenuto, \textit{LSB} steganografski postupci se mogu koristiti i na \textit{GIF} slikama jer one koriste lossless kompresiju (konkretno, \textit{LZW} kompresiju), ali valja biti oprezan. Problem je u tome što \textit{GIF} slike spremaju različite boje koje se koriste u takozvanu tablicu "paletu boja", gdje je svakoj boji dodijeljen indeks u toj tablici. U takvoj slici su svi pikseli definirani samo indeksom u toj paleti pa je bitno paziti jer bliski indeksi u paleti boja mogu rezultirati potpuno različitim bojama pa nije dobro izravno primjenjivati \textit{LSB} postupak. Taj problem se može riješiti tako da se sortiraju boje u paleti, što će dovesti do toga da slični indeksi rezultiraju sličnim bojama pa je onda moguće raditi običan \textit{LSB} algoritam.
 \paragraph{}
 Drugi način za doskočiti ovom problemu je da uvodimo nove boje u paletu koje su vizualno slične već postojećim bojama u paleti. Ovo zahtijeva da je broj korištenih boja u paleti manji od maksimalnog broja boja pa je potrebno paziti u kakve slike skrivamo poruke. Još jedan način rješavanja ovog problema je da koristimo crno-bijele slike gdje imamo 256 različitih nijansi sive gdje je promjena u nijansama vrlo postepena i teža za uočiti.
 \chapter{Postupak rješavanja zadataka}
@@ -173,7 +174,7 @@ Udio veličine podataka $\eta$ koje je za dane parametre moguće upisati u sliku
 Povećanjem $\eta$ vizualna razlika između izvorne slike i slike obrađene steganografskim algoritmom, u našem slučaju \textit{LSB}-om, povećava se. U nastavku slijede rezultati ispitivanja odnosa izvorne i obrađene slike u ovisnosti o parametrima $n_{components}$ i $n_{bits}$.
 \section{Ispitna baza}
 \paragraph{}
-Ispitivanje algoritma \textit{LSB} napravljeno je nad dvjema različitim slikama. Slika \ref{chart_original} korištena je kako bi se ispitala osjetljivost boja na postupak, dok bi slika \ref{pattern_original} trebala pokazati osjetljivost tekstura. Ispitni primjeri pripremljeni su u ovisnosti o parametrima $n_{components}$ i $n_{bits}$. Za obje izvorne slike algoritam je pokrenut za sve moguće kombinacije parametara. Parametar $n_{components}$ poprima vrijednosti iz $[1,3]$, pošto svaki piksel ima crvenu, zelenu i plavu komponentu boje. Parametar $n_{bits}$ poprima vrijednosti iz $[1,8]$, gdje se za svaki bajt koristi $n_{bits}$ bitova u koje se upisuje podatak. Ukupno postoje 24 moguća para parametara algoritma. Nadalje, za svaki ispitni primjer odabrana je najveća količina podataka moguća za dane parametre, te su generirani nizovi bitova nasumične vrijednosti. U idućem odjeljku slijede rezultati ispitivanja, koji vizualno prikazuju promjenu kvalitete slike u ovisnosti o parametrima algoritma.
+Ispitivanje algoritma \textit{LSB} napravljeno je nad dvjema različitim slikama. Slika \ref{chart_original} korištena je kako bi se ispitala osjetljivost boja na postupak, dok bi slika \ref{pattern_original} trebala pokazati osjetljivost na realnoj slici. Ispitni primjeri pripremljeni su u ovisnosti o parametrima $n_{components}$ i $n_{bits}$. Za obje izvorne slike algoritam je pokrenut za sve moguće kombinacije parametara. Parametar $n_{components}$ poprima vrijednosti iz $[1,3]$, pošto svaki piksel ima crvenu, zelenu i plavu komponentu boje. Parametar $n_{bits}$ poprima vrijednosti iz $[1,8]$, gdje se za svaki bajt koristi $n_{bits}$ bitova u koje se upisuje podatak. Ukupno postoje 24 moguća para parametara algoritma. Nadalje, za svaki ispitni primjer odabrana je najveća količina podataka moguća za dane parametre, te su generirani nizovi bitova nasumične vrijednosti. U idućem odjeljku slijede rezultati ispitivanja, koji vizualno prikazuju promjenu kvalitete slike u ovisnosti o parametrima algoritma.
 \begin{center}
 \begin{figure}[ht]
 	\caption{Izvorna slika jednostavnih boja, bez teksture}
@@ -190,7 +191,7 @@ Ispitivanje algoritma \textit{LSB} napravljeno je nad dvjema različitim slikama
 	\caption{Izvorna slika s teksturom}
 	\label{pattern_original}
 	\centerline{
-	\includegraphics[scale=0.4]{../benchmark_results/pattern/pattern_original.jpg}	
+	\includegraphics[scale=0.4]{../benchmark_results/pattern/original_image.png}	
 	}
 \end{figure}
 \end{center}
@@ -290,7 +291,7 @@ Tablice \ref{table_chart} i \ref{pattern_original} prikazuju obrađene slike alg
 
 \section{Analiza rezultata}
 \paragraph{}
-Ispitivanje je pokazalo kako upisana količina podataka znatno može utjecati na promjenu izgleda izvorne slike. Bez obzira na prirodu izvorne slike, za $\eta$ > 50\% obrađena slika sadrži znatnu količinu šuma, i nikako se ne preporučuje korištenje algoritma s parametrima $n_{bits}$ i $n_{componets}$ za $\eta$ > 50\%. Nadalje, parametri $n_{bits}$ i $n_{componets}$ za $\eta$ < 25\% generiraju slike za koje se ne može razlučiti da je nad njima vršena obrada. Iz ovog područja algoritam se najbolje ponaša za one parametre koji svaki kanal mijenjaju u istoj mjeri iz razloga što je za te parametre izgled kontrasta na obrađenim slikama najprirodniji(svaka boja mijenja se u istoj mjeri). Za $\eta \in$ [25\%, 50\%] algoritam daje prihvatljiva rješenja, ali samo za one parametre koji svaku komponentu boje mijenjaju u istoj mjeri. Za parametre iz tog intervala koji primjerice mijenjaju 7 bitova samo jedne komponente, slika poprima neprirodan izgled i u velikoj mjeri odskače od izgleda izvorne slike.
+Ispitivanje je pokazalo kako upisana količina podataka znatno može utjecati na promjenu izgleda izvorne slike. Bez obzira na prirodu izvorne slike, za $\eta$ > 50\% obrađena slika sadrži znatnu količinu šuma, i nikako se ne preporučuje korištenje algoritma s parametrima $n_{bits}$ i $n_{componets}$ za $\eta$ > 50\%. Nadalje, parametri $n_{bits}$ i $n_{componets}$ za $\eta$ < 25\% generiraju slike za koje se ne može razlučiti da je nad njima vršena obrada. Iz ovog područja algoritam se najbolje ponaša za one parametre koji svaki kanal mijenjaju u istoj mjeri iz razloga što je za te parametre izgled kontrasta na obrađenim slikama najprirodniji(svaka boja mijenja se u istoj mjeri). Za $\eta \in$ [25\%, 50\%] algoritam daje prihvatljiva rješenja, ali samo za one parametre koji svaku komponentu boje mijenjaju u istoj mjeri. Za parametre iz tog intervala koji primjerice mijenjaju 7 bitova samo jedne komponente, slika poprima neprirodan izgled i u velikoj mjeri odskače od izgleda izvorne slike \cite{steg_bench}.
 \paragraph{}
 Analiza rezultata potvrđuje izvornu hipotezu da je algoritam osjetljiv na količinu podataka koji se upisuju na sliku. Najbolji rezultati ostvareni su za parametre koji mijenjaju do 2 najmanje značajna bita svake komponente(za $\eta \in$ [0\%, 25\%]), što u konačnici znači da se u svaku sliku može upisati količina podataka koja odgovara četvrtini veličine izvorne slike.
 \chapter{Opis programske implementacije rješenja}
@@ -389,12 +390,6 @@ Osnovna namjena korištenja aplikacije je reverzibilna deidentifikacija osoba na
 U smislu poboljšanja postupka, budući rad mogao bi ići u smjeru promjene načina na koji se raspoznaju identifikacijske značajke na slici. Trenutna implementacija je takva da korisnik sam odabere područje koje sadrži identifikacijske značajke na slici i da mu je ponuđeno da sakrije i steganografski upiše te podatke u samu sliku. Budući rad za unapređenje sustava bio bi algoritam koji bi automatski raspoznavao područja koja sadrže identifikacijske značajke na slici i sakrivao ih te steganografski upisivao u sliku. Nadalje, mogući rad mogao bi ići i u smjeru povećanja sigurnosti sustava, odnosno većoj zaštiti identiteta osobe na slici korištenjem enkripcije. Sustav bi trebalo promijeniti tako da podatke prije samog steganografskog upisivanja u sliku zaštiti nekim enkripcijskom algoritmom koristeći ključ koji je poznat samo stranama ovlaštenima za pristup identifikacijskim podacima.
 
 \bibliography{literatura}
-\begin{itemize}
-  \item http://ijact.org/volume3issue4/IJ0340004.pdf
-  \item http://www.sersc.org/journals/IJAST/vol54/11.pdf
-  \item http://www.airccse.org/journal/ijcses/papers/4113ijcses02.pdf
-  \item http://www.ijtre.com/manuscript/2014010955.pdf
-  \item http://martinolivier.com/open/stegoverview.pdf
-  \item http://www.ws.binghamton.edu/fridrich/Research/benchmark04.pdf
-\end{itemize}
+\bibliographystyle{fer}
+
 \end{document}

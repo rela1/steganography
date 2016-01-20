@@ -1,3 +1,62 @@
-This is BibTeX, Version 0.99dThe top-level auxiliary file: seminar.aux
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: seminar.aux
 The style file: fer.bst
+Illegal, another \bibstyle command---line 134 of file seminar.aux
+ : \bibstyle
+ :          {fer}
+I'm skipping whatever remains of this command
 Database file #1: literatura.bib
+Warning--empty year in ijtre_steg
+Warning--empty year in ijtre_steg
+Warning--empty year in ijact_lsb
+Warning--empty year in ijact_lsb
+Warning--empty year in ijast_steg
+Warning--empty year in ijast_steg
+Warning--empty journal in steg_bench
+Warning--empty year in steg_bench
+Warning--empty year in steg_bench
+Warning--empty year in ijcses_steg
+Warning--empty year in ijcses_steg
+You've used 5 entries,
+            2773 wiz_defined-function locations,
+            618 strings with 5843 characters,
+and the built_in function-call counts, 1537 in all, are:
+= -- 123
+> -- 50
+< -- 5
++ -- 20
+- -- 15
+* -- 93
+:= -- 248
+add.period$ -- 14
+call.type$ -- 5
+change.case$ -- 20
+chr.to.int$ -- 5
+cite$ -- 21
+duplicate$ -- 95
+empty$ -- 151
+format.name$ -- 20
+if$ -- 304
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 5
+newline$ -- 32
+num.names$ -- 20
+pop$ -- 67
+preamble$ -- 1
+purify$ -- 15
+quote$ -- 0
+skip$ -- 51
+stack$ -- 0
+substring$ -- 10
+swap$ -- 4
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 55
+warning$ -- 11
+while$ -- 15
+width$ -- 0
+write$ -- 60
+(There was 1 error message)
